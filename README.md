@@ -2,7 +2,7 @@
 
 # Tip Generator Application
 
-This project is a bilingual tip generator application that supports both Arabic and English languages. It allows users to toggle between languages dynamically, view tips in the selected language, and even display tips automatically with a countdown timer.
+This project is a bilingual tip generator application that supports both Arabic and English languages. It allows users to toggle between languages dynamically, view tips in the selected language, and [...]
 
 ## Features
 
@@ -24,6 +24,10 @@ This project is a bilingual tip generator application that supports both Arabic 
    - Start auto tips with a countdown.
    - Stop auto tips.
    - Toggle between Arabic and English languages.
+
+## Deployment
+
+You can access the deployed project at: [http://muhamed-mustafa.me/tips_generator/](http://muhamed-mustafa.me/tips_generator/)
 
 ## Development Notes
 
