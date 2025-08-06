@@ -1,4 +1,4 @@
-# ![Overview](overview.png)
+# [![Overview](overview.png)](http://muhamed-mustafa.me/tips_generator/)
 
 # Tip Generator Application
 
@@ -43,4 +43,4 @@ You can access the deployed project at: [http://muhamed-mustafa.me/tips_generato
 
 ## Screenshot
 
-![Overview](overview.png)
+[![Overview](overview.png)](http://muhamed-mustafa.me/tips_generator/)
