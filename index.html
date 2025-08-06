@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <title>Tip Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    h2 {
+      text-align: center;
+      color: #4a5568;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      font-weight: 300;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #718096;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-family: 'Cairo', Tahoma, Geneva, Verdana, sans-serif !important;
+      font-size: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      font-weight: 500;
+      min-width: 150px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #stopAutoTips {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    #stopAutoTips:hover {
+      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    }
+
+    #tipDisplay {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      min-height: 100px;
+    }
+
+    #tipDisplay div {
+      padding: 20px;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      font-size: 18px;
+      font-weight: 500;
+      color: #2d3748;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.6s ease forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #tipDisplay div::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+
+    #tipDisplay div:nth-child(even) {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    }
+
+    #tipDisplay div:nth-child(3n) {
+      background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%);
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    .tip-counter {
+      text-align: center;
+      color: #718096;
+      margin-top: 20px;
+      font-size: 14px;
+      font-style: italic;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #a0aec0;
+      font-weight: 300;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin: 10px;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      button {
+        min-width: 120px;
+        font-size: 14px;
+      }
+
+      #tipDisplay div {
+        font-size: 16px;
+        padding: 15px;
+      }
+    }
+
+    /* RTL Support */
+    [dir="rtl"] {
+      text-align: right;
+    }
+
+    [dir="rtl"] h2,
+    [dir="rtl"] .subtitle,
+    [dir="rtl"] footer,
+    [dir="rtl"] .tip-counter {
+      text-align: center;
+    }
+
+    [dir="rtl"] #controls {
+      direction: ltr;
+      /* Keep button order consistent */
+    }
+
+    [dir="rtl"] #tipDisplay div {
+      text-align: right;
+    }
+
+    /* Arabic font improvements */
+    [dir="rtl"] {
+      font-family: 'Segoe UI', 'Tahoma', 'Noto Sans Arabic', 'Cairo', 'Amiri', sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>💡 Daily Tip Generator</h2>
+    <p class="subtitle">Discover helpful tips to improve your coding journey</p>
+
+    <div id="controls">
+      <button id="showTips">Show All Tips</button>
+      <button id="autoTips">Auto Show Tips</button>
+      <button id="stopAutoTips" style="display:none;">Stop Auto Tips</button>
+    </div>
+
+    <div id="tipDisplay"></div>
+    <div id="tipCounter" class="tip-counter"></div>
+
+    <footer>
+      &copy; <span id="year"></span> Daily Tip Generator. Made by <span id="author"
+        style="font-weight: bold; color: #4a5568;">Mohamed Mostafa</span> with ❤️ for
+      developers
+    </footer>
+  </div>
+
+  <script>
+    // Set the current year in the footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // a. Create a generator that has an array of 10 tips, and loops on the array and each time returns the next tip.
+    function* tipGenerator() {
+      const tips = translations[currentLang].tips;
+
+      let i = 0;
+      while (true) {
+        yield tips[i % tips.length];
+        i++;
+      }
+    }
+
+    const display = document.getElementById("tipDisplay");
+    const tipCounter = document.getElementById("tipCounter");
+    let autoInterval = null;
+    let countdownInterval = null;
+    let currentAutoGenerator = null;
+    let isShowingAllTips = false;
+    let currentTipCount = 0;
+
+    function updateTipCounter(count, isAuto = false, remainingSec = 3) {
+      const t = translations[currentLang];
+      if (isAuto) {
+        tipCounter.textContent = t.tipCounter(count, true, remainingSec);
+      } else if (count > 0) {
+        tipCounter.textContent = t.tipCounter(count, false);
+      } else {
+        tipCounter.textContent = '';
+      }
+    }
+
+    // Language translations
+    const translations = {
+      en: {
+        title: "💡 Daily Tip Generator",
+        subtitle: "Discover helpful tips to improve your coding journey",
+        showTips: "Show All Tips",
+        hideTips: "Hide All Tips",
+        autoTips: "Auto Show Tips",
+        stopAutoTips: "Stop Auto Tips",
+        footer: "Made by Mohamed Mostafa with ❤️ for developers",
+        tipCounter: (count, isAuto, remainingSec = 3) => isAuto ? `Auto tip #${count} - Next tip in ${remainingSec} seconds...` : `Showing ${count} tip${count > 1 ? 's' : ''}`,
+        tips: [
+          "Stay hydrated.",
+          "Take regular breaks.",
+          "Write clean code.",
+          "Always test your code.",
+          "Use version control.",
+          "Keep learning.",
+          "Ask for help.",
+          "Plan before coding.",
+          "Practice daily.",
+          "Read documentation."
+        ]
+      },
+      ar: {
+        title: "💡 مولد النصائح اليومية",
+        subtitle: "اكتشف نصائح مفيدة لتحسين رحلتك البرمجية",
+        showTips: "عرض كل النصائح",
+        hideTips: "إخفاء كل النصائح",
+        autoTips: "عرض النصائح تلقائيًا",
+        stopAutoTips: "إيقاف النصائح التلقائية",
+        footer: "صُنع بواسطة محمد مصطفى بـ ❤️ للمطورين",
+        tipCounter: (count, isAuto, remainingSec = 3) => isAuto ? `النصيحة التلقائية رقم ${count} - النصيحة التالية خلال ${remainingSec} ثانية...` : `عرض ${count} نصيحة`,
+        tips: [
+          "حافظ على شرب الماء.",
+          "خذ فترات راحة منتظمة.",
+          "اكتب كوداً نظيفاً.",
+          "اختبر كودك دائماً.",
+          "استخدم أنظمة التحكم في الإصدارات.",
+          "استمر في التعلم.",
+          "اطلب المساعدة.",
+          "خطط قبل البرمجة.",
+          "مارس يومياً.",
+          "اقرأ الوثائق التقنية."
+        ]
+      }
+    };
+
+    let currentLang = 'en';
+
+    function updateLanguage(lang) {
+      currentLang = lang;
+      const t = translations[lang];
+
+      // Update document direction and lang attribute
+      document.documentElement.setAttribute('lang', lang);
+      document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      document.body.style.direction = lang === 'ar' ? 'rtl' : 'ltr';
+
+      // Update text content
+      document.querySelector("h2").textContent = t.title;
+      document.querySelector(".subtitle").textContent = t.subtitle;
+      document.getElementById("showTips").textContent = isShowingAllTips ? t.hideTips : t.showTips;
+      document.getElementById("autoTips").textContent = t.autoTips;
+      document.getElementById("stopAutoTips").textContent = t.stopAutoTips;
+
+      // Update footer with proper year
+      document.getElementById("year").textContent = new Date().getFullYear();
+      document.querySelector("footer").innerHTML = `&copy; <span id="year">${new Date().getFullYear()}</span> Daily Tip Generator. ${t.footer}`;
+
+      // Update tip counter if needed
+      updateTipCounter(currentTipCount, autoInterval !== null);
+
+      // Update existing displayed tips if any
+      if (display.children.length > 0) {
+        if (isShowingAllTips) {
+          // Re-display all tips in new language
+          display.innerHTML = "";
+          const tipsGenerator = tipGenerator();
+          let count = 0;
+          for (const tip of tipsGenerator) {
+            if (count >= 10) break;
+            const div = document.createElement("div");
+            div.textContent = `${count + 1}. ${tip}`;
+            div.style.animationDelay = `${count * 0.1}s`;
+            display.appendChild(div);
+            count++;
+          }
+        } else if (autoInterval !== null) {
+          // Recreate generator for new language and advance to current position
+          currentAutoGenerator = tipGenerator();
+          let newTip;
+          for (let i = 0; i < currentTipCount; i++) {
+            newTip = currentAutoGenerator.next().value;
+          }
+
+          // Update current auto tip in new language
+          const currentTipDiv = display.children[0];
+          if (currentTipDiv && newTip) {
+            currentTipDiv.textContent = `💡 ${newTip}`;
+          }
+        }
+      }
+    }
+
+    // Add language toggle button with better styling
+    const langToggle = document.createElement("button");
+    langToggle.textContent = "عربي";
+    langToggle.style.cssText = `
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      min-width: auto;
+      background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+      box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+    `;
+    langToggle.addEventListener("click", () => {
+      const newLang = currentLang === 'en' ? 'ar' : 'en';
+      langToggle.textContent = newLang === 'en' ? "عربي" : "English";
+      updateLanguage(newLang);
+    });
+
+    // Make container relative for absolute positioning
+    document.querySelector(".container").style.position = "relative";
+    document.querySelector(".container").appendChild(langToggle);
+
+    // Initialize the page with the default language
+    updateLanguage(currentLang);
+
+    // b. Make a button that loop on the generator and display all tips [Using for…of]
+    document.getElementById("showTips").addEventListener("click", () => {
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        document.getElementById("autoTips").style.display = 'inline-block';
+        document.getElementById("stopAutoTips").style.display = 'none';
+      }
+
+      if (isShowingAllTips) {
+        // Hide all tips
+        const children = Array.from(display.children);
+        children.forEach((child, index) => {
+          child.style.animation = `fadeOut 0.5s ease ${index * 0.1}s forwards`;
+          setTimeout(() => child.remove(), 500 + index * 100);
+        });
+        document.getElementById("showTips").textContent = translations[currentLang].showTips;
+        isShowingAllTips = false;
+        updateTipCounter(0);
+      } else {
+        // Show all tips
+        display.innerHTML = "";
+        const tipsGenerator = tipGenerator();
+        let count = 0;
+        for (const tip of tipsGenerator) {
+          if (count >= 10) break;
+          const div = document.createElement("div");
+          div.textContent = `${count + 1}. ${tip}`;
+          div.style.animationDelay = `${count * 0.1}s`;
+          display.appendChild(div);
+          count++;
+        }
+        document.getElementById("showTips").textContent = translations[currentLang].hideTips;
+        isShowingAllTips = true;
+        updateTipCounter(count);
+      }
+    });
+
+    // c. Make another button that uses setInterval (with arrow function) to display a tip every 3 seconds from the generator.[use next()]
+    document.getElementById("autoTips").addEventListener("click", () => {
+      if (isShowingAllTips) {
+        document.getElementById("showTips").textContent = translations[currentLang].showTips;
+        isShowingAllTips = false;
+      }
+
+      display.innerHTML = "";
+      currentAutoGenerator = tipGenerator();
+      currentTipCount = 0;
+
+      const showTip = () => {
+        currentTipCount++;
+        const result = currentAutoGenerator.next();
+        const div = document.createElement("div");
+        div.textContent = `💡 ${result.value}`;
+        div.style.background = `linear-gradient(135deg, hsl(${(currentTipCount * 40) % 360}, 70%, 85%) 0%, hsl(${(currentTipCount * 40 + 60) % 360}, 70%, 90%) 100%)`;
+        display.innerHTML = ''; // Clear before showing the new tip
+        display.appendChild(div);
+
+        // Start countdown for next tip
+        let remainingSec = 3;
+        updateTipCounter(currentTipCount, true, remainingSec);
+
+        if (countdownInterval) clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+          remainingSec--;
+          if (remainingSec > 0) {
+            updateTipCounter(currentTipCount, true, remainingSec);
+          } else {
+            clearInterval(countdownInterval);
+          }
+        }, 1000);
+      };
+
+      showTip(); // Show first tip immediately
+      autoInterval = setInterval(showTip, 3000);
+
+      document.getElementById("autoTips").style.display = 'none';
+      document.getElementById("stopAutoTips").style.display = 'inline-block';
+    });
+
+    document.getElementById("stopAutoTips").addEventListener("click", () => {
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        if (countdownInterval) {
+          clearInterval(countdownInterval);
+          countdownInterval = null;
+        }
+        currentAutoGenerator = null;
+        document.getElementById("autoTips").style.display = 'inline-block';
+        document.getElementById("stopAutoTips").style.display = 'none';
+        updateTipCounter(0);
+      }
+    });
+  </script>
+</body>
+
+</html>
